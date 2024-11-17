@@ -1,28 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nuclei Web Interface</title>
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 font-sans leading-normal tracking-normal">
+
+<body class="bg-gray-900 text-white font-sans leading-normal tracking-normal">
+
     <div class="container mx-auto mt-10" x-data="nucleiApp()">
-        <h1 class="text-center text-4xl font-bold">Nuclei Scanner</h1>
+        <h1 class="text-center text-4xl font-bold text-gray-100">Nuclei Scanner</h1>
         <div class="mt-8 flex justify-center">
             <form @submit.prevent="startScan" class="w-full max-w-lg">
                 <input type="url" x-model="url" placeholder="Enter target URL" 
-                       class="w-full p-3 border rounded shadow" required>
+                       class="w-full p-3 border border-gray-600 bg-gray-800 text-white rounded shadow focus:outline-none focus:ring-2 focus:ring-blue-500" required>
                 <button type="submit" 
-                        class="mt-4 w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        class="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
                     Scan
                 </button>
             </form>
         </div>
 
         <div class="mt-10" x-show="status">
-            <h2 class="text-center text-2xl">Status: <span x-text="status"></span></h2>
-            <p class="text-center" x-text="message"></p>
+            <h2 class="text-center text-2xl text-gray-200">Status: <span x-text="status"></span></h2>
+            <p class="text-center text-gray-400" x-text="message"></p>
         </div>
     </div>
 
@@ -59,4 +63,5 @@
         }
     </script>
 </body>
+
 </html>

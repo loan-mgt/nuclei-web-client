@@ -13,6 +13,9 @@ COPY go.mod go.sum ./
 # Download the Go dependencies
 RUN go mod download
 
+# Install nuclei using `go install`
+RUN go install -v github.com/projectdiscovery/nuclei/v3/cmd/nuclei@latest
+
 # Copy the entire project into the container (make sure Dockerfile is in the root)
 COPY . .
 
@@ -25,14 +28,15 @@ RUN go build -o main .
 # Stage 2: Run the application
 FROM alpine:latest
 
-# Install necessary dependencies for running the app
+# Install necessary dependencies for runtime
 RUN apk add --no-cache ca-certificates
 
 # Set the working directory for the runtime container
 WORKDIR /app
 
-# Copy the compiled Go binary from the builder image
+# Copy the compiled Go binary and the nuclei binary from the builder image
 COPY --from=builder /app/cmd/server/main .
+COPY --from=builder /go/bin/nuclei /usr/local/bin/nuclei
 
 # Copy the public folder into the runtime container
 COPY ./public /app/public

@@ -28,6 +28,11 @@
             <h2 class="text-center text-2xl text-gray-200">Status: <span x-text="status"></span></h2>
             <p class="text-center text-gray-400" x-text="message"></p>
         </div>
+
+        <div class="mt-10" x-show="output">
+            <h2 class="text-center text-2xl text-gray-200">Scan Output</h2>
+            <pre class="bg-gray-800 text-gray-400 p-4 mt-4 rounded shadow" x-text="output"></pre>
+        </div>
     </div>
 
     <script>
@@ -36,6 +41,7 @@
                 url: '',
                 status: null,
                 message: null,
+                output: null,
                 ws: null,
 
                 startScan() {
@@ -57,6 +63,7 @@
                         const data = JSON.parse(event.data);
                         this.status = data.status;
                         this.message = data.message;
+                        this.output = data.output ? JSON.stringify(JSON.parse(data.output), null, 2) : null; // Format output as JSON
                     };
                 }
             };

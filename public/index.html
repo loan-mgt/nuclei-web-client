@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuclei Web Interface</title>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+</head>
+<body class="bg-gray-100 font-sans leading-normal tracking-normal">
+    <div class="container mx-auto mt-10" x-data="nucleiApp()">
+        <h1 class="text-center text-4xl font-bold">Nuclei Scanner</h1>
+        <div class="mt-8 flex justify-center">
+            <form @submit.prevent="startScan" class="w-full max-w-lg">
+                <input type="url" x-model="url" placeholder="Enter target URL" 
+                       class="w-full p-3 border rounded shadow" required>
+                <button type="submit" 
+                        class="mt-4 w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    Scan
+                </button>
+            </form>
+        </div>
+
+        <div class="mt-10" x-show="status">
+            <h2 class="text-center text-2xl">Status: <span x-text="status"></span></h2>
+            <p class="text-center" x-text="message"></p>
+        </div>
+    </div>
+
+    <script>
+        function nucleiApp() {
+            return {
+                url: '',
+                status: null,
+                message: null,
+                ws: null,
+
+                startScan() {
+                    fetch('/scan', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: new URLSearchParams({ url: this.url })
+                    }).then(res => {
+                        if (res.redirected) {
+                            const hash = res.url.split('/').pop();
+                            this.connectWebSocket(hash);
+                        }
+                    });
+                },
+
+                connectWebSocket(hash) {
+                    this.ws = new WebSocket(`ws://${location.host}/ws/${hash}`);
+                    this.ws.onmessage = (event) => {
+                        const data = JSON.parse(event.data);
+                        this.status = data.status;
+                        this.message = data.message;
+                    };
+                }
+            };
+        }
+    </script>
+</body>
+</html>
